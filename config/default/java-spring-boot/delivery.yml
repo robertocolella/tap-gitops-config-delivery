@@ -40,9 +40,10 @@ spec:
           spring-boot-convention/app-live-view-appflavour-check
           spring-boot-convention/app-live-view-connector-boot
           spring-boot-convention/app-live-view-appflavours-boot
-        developer.apps.tanzu.vmware.com/image-source-digest: colellar.azurecr.io/tap-lsp/tap-lsp:default-java-spring-boot@sha256:63e64e27b95a6b29c173d43eea41ec5df08f5cbebd7757e4991b023ca170290e
+        developer.apps.tanzu.vmware.com/image-source-digest: colellar.azurecr.io/tap-lsp/tap-lsp:default-java-spring-boot@sha256:ebf7e0b23331d2851a7b53ddcb06b4d51f7020c601e1a2971f500a60cb8bf495
         developer.conventions/target-containers: workload
-        local-source-proxy.apps.tanzu.vmware.com: colellar.azurecr.io/tap-lsp/tap-lsp:default-java-spring-boot@sha256:63e64e27b95a6b29c173d43eea41ec5df08f5cbebd7757e4991b023ca170290e
+        local-source-proxy.apps.tanzu.vmware.com: colellar.azurecr.io/tap-lsp/tap-lsp:default-java-spring-boot@sha256:ebf7e0b23331d2851a7b53ddcb06b4d51f7020c601e1a2971f500a60cb8bf495
+        sidecar.opentelemetry.io/inject: "true"
       labels:
         app.kubernetes.io/component: run
         app.kubernetes.io/part-of: java-spring-boot
@@ -67,7 +68,7 @@ spec:
           value: "9005"
         - name: JAVA_TOOL_OPTIONS
           value: -Dmanagement.endpoint.health.probes.add-additional-paths="true" -Dmanagement.endpoint.health.show-details="always" -Dmanagement.endpoints.web.base-path="/actuator" -Dmanagement.endpoints.web.exposure.include="*" -Dmanagement.health.probes.enabled="true" -Dmanagement.server.port="8081" -Dserver.port="8080" -Dserver.shutdown.grace-period="24s"
-        image: colellar.azurecr.io/tap/supplychain/java-spring-boot-default@sha256:ad8ebc86834ebd487424f86db6cddec65caa835d3cf2b63a5c147af98d312787
+        image: colellar.azurecr.io/tap/supplychain/java-spring-boot-default@sha256:ea7062f12db086f79d2d06a780f6552338d18ac9bf3f8f686105a9c046aed06c
         livenessProbe:
           httpGet:
             path: /livez

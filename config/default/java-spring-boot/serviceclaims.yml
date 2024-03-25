@@ -18,12 +18,13 @@ kind: ServiceBinding
 metadata:
   name: java-spring-boot-config
   annotations:
-    local-source-proxy.apps.tanzu.vmware.com: colellar.azurecr.io/tap-lsp/tap-lsp:default-java-spring-boot@sha256:63e64e27b95a6b29c173d43eea41ec5df08f5cbebd7757e4991b023ca170290e
+    local-source-proxy.apps.tanzu.vmware.com: colellar.azurecr.io/tap-lsp/tap-lsp:default-java-spring-boot@sha256:ebf7e0b23331d2851a7b53ddcb06b4d51f7020c601e1a2971f500a60cb8bf495
     autoscaling.knative.dev/maxScale: "3"
     autoscaling.knative.dev/metric: rps
     autoscaling.knative.dev/minScale: "0"
     autoscaling.knative.dev/target: "5"
     autoscaling.knative.dev/window: 120s
+    sidecar.opentelemetry.io/inject: "true"
     kapp.k14s.io/change-group: servicebinding.io/ServiceBindings
   labels:
     app.kubernetes.io/part-of: java-spring-boot
