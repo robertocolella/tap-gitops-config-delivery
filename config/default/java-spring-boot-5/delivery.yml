@@ -70,7 +70,7 @@ spec:
           value: "9005"
         - name: JAVA_TOOL_OPTIONS
           value: -Dmanagement.endpoint.health.probes.add-additional-paths="true" -Dmanagement.endpoint.health.show-details="always" -Dmanagement.endpoints.web.base-path="/actuator" -Dmanagement.endpoints.web.exposure.include="*" -Dmanagement.health.probes.enabled="true" -Dmanagement.server.port="8081" -Dserver.port="8080" -Dserver.shutdown.grace-period="24s"
-        image: colellar.azurecr.io/tap/supplychain/java-spring-boot-5-default@sha256:840ffd1c91b3647e1354c5e80422ff71a5f7d25378d7272ff36e3b7724a19f9d
+        image: colellar.azurecr.io/tap/supplychain/java-spring-boot-5-default@sha256:96aabd1571e3486176c0ebf3b34bb75c55a0ea83463024fe91d0281953d14696
         livenessProbe:
           httpGet:
             path: /livez
