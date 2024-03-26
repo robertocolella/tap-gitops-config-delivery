@@ -1,0 +1,109 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: outer-loop-definitive
+  annotations:
+    ootb.apps.tanzu.vmware.com/servicebinding-workload: "true"
+    ootb.apps.tanzu.vmware.com/apidescriptor-ref: "true"
+    kapp.k14s.io/change-rule: upsert after upserting servicebinding.io/ServiceBindings
+  labels:
+    apis.apps.tanzu.vmware.com/register-api: "true"
+    app.kubernetes.io/part-of: outer-loop-definitive
+    apps.tanzu.vmware.com/has-tests: "true"
+    apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/component: run
+    carto.run/workload-name: outer-loop-definitive
+spec:
+  template:
+    metadata:
+      annotations:
+        apps.tanzu.vmware.com/correlationid: colellar.azurecr.io/tap-lsp/tap-lsp:default-outer-loop-definitive?sub_path=/
+        apps.tanzu.vmware.com/debug: "true"
+        apps.tanzu.vmware.com/live-update: "true"
+        autoscaling.knative.dev/maxScale: "1"
+        autoscaling.knative.dev/metric: rps
+        autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/target: "5"
+        autoscaling.knative.dev/window: 120s
+        boot.spring.io/actuator: http://:8081/actuator
+        boot.spring.io/version: 3.2.4
+        conventions.carto.run/applied-conventions: |-
+          appliveview-sample/app-live-view-appflavour-check
+          developer-conventions/debug-convention
+          developer-conventions/live-update-convention
+          developer-conventions/add-source-image-label
+          spring-boot-convention/auto-configure-actuators-check
+          spring-boot-convention/spring-boot
+          spring-boot-convention/spring-boot-graceful-shutdown
+          spring-boot-convention/spring-boot-web
+          spring-boot-convention/spring-boot-actuator
+          spring-boot-convention/spring-boot-actuator-probes
+          spring-boot-convention/app-live-view-appflavour-check
+          spring-boot-convention/app-live-view-connector-boot
+          spring-boot-convention/app-live-view-appflavours-boot
+        developer.apps.tanzu.vmware.com/image-source-digest: colellar.azurecr.io/tap-lsp/tap-lsp:default-outer-loop-definitive@sha256:c5eab93a15ad74c27f6446c82dae02b7234874a44a97dccaa0c282fb7676d213
+        developer.conventions/target-containers: workload
+        local-source-proxy.apps.tanzu.vmware.com: colellar.azurecr.io/tap-lsp/tap-lsp:default-outer-loop-definitive@sha256:c5eab93a15ad74c27f6446c82dae02b7234874a44a97dccaa0c282fb7676d213
+        sidecar.opentelemetry.io/inject: "true"
+      labels:
+        apis.apps.tanzu.vmware.com/register-api: "true"
+        app.kubernetes.io/component: run
+        app.kubernetes.io/part-of: outer-loop-definitive
+        apps.tanzu.vmware.com/auto-configure-actuators: "true"
+        apps.tanzu.vmware.com/has-tests: "true"
+        apps.tanzu.vmware.com/workload-type: web
+        carto.run/workload-name: outer-loop-definitive
+        conventions.carto.run/framework: spring-boot
+        tanzu.app.live.view: "true"
+        tanzu.app.live.view.application.actuator.path: actuator
+        tanzu.app.live.view.application.actuator.port: "8081"
+        tanzu.app.live.view.application.flavours: spring-boot
+        tanzu.app.live.view.application.name: outer-loop-definitive
+    spec:
+      containers:
+      - env:
+        - name: SPRING_CONFIG_IMPORT
+          value: optional:configtree:${SERVICE_BINDING_ROOT}/config/
+        - name: BPL_DEBUG_ENABLED
+          value: "true"
+        - name: BPL_DEBUG_PORT
+          value: "9005"
+        - name: JAVA_TOOL_OPTIONS
+          value: -Dmanagement.endpoint.health.probes.add-additional-paths="true" -Dmanagement.endpoint.health.show-details="always" -Dmanagement.endpoints.web.base-path="/actuator" -Dmanagement.endpoints.web.exposure.include="*" -Dmanagement.health.probes.enabled="true" -Dmanagement.server.port="8081" -Dserver.port="8080" -Dserver.shutdown.grace-period="24s"
+        image: colellar.azurecr.io/tap/supplychain/outer-loop-definitive-default@sha256:02b089f32dd6a6044e13bbd805076dda342a31871789577e3a2d5964939fb206
+        livenessProbe:
+          httpGet:
+            path: /livez
+            port: 8080
+            scheme: HTTP
+        name: workload
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8080
+            scheme: HTTP
+        resources:
+          limits:
+            memory: 1Gi
+          requests:
+            cpu: "1"
+            memory: 1Gi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          runAsUser: 1000
+          seccompProfile:
+            type: RuntimeDefault
+        startupProbe:
+          httpGet:
+            path: /readyz
+            port: 8080
+            scheme: HTTP
+      serviceAccountName: default
+
