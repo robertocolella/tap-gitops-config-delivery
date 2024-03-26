@@ -16,16 +16,21 @@ spec:
   template:
     metadata:
       annotations:
-        apps.tanzu.vmware.com/correlationid: https://github.com/robertocolella/awesome-25?sub_path=/
-        autoscaling.knative.dev/maxScale: "3"
+        apps.tanzu.vmware.com/correlationid: colellar.azurecr.io/tap-lsp/tap-lsp:default-java-spring-boot?sub_path=/
+        apps.tanzu.vmware.com/debug: "true"
+        apps.tanzu.vmware.com/live-update: "true"
+        autoscaling.knative.dev/maxScale: "1"
         autoscaling.knative.dev/metric: rps
-        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/minScale: "1"
         autoscaling.knative.dev/target: "5"
         autoscaling.knative.dev/window: 120s
         boot.spring.io/actuator: http://:8081/actuator
         boot.spring.io/version: 3.1.4
         conventions.carto.run/applied-conventions: |-
           appliveview-sample/app-live-view-appflavour-check
+          developer-conventions/debug-convention
+          developer-conventions/live-update-convention
+          developer-conventions/add-source-image-label
           spring-boot-convention/auto-configure-actuators-check
           spring-boot-convention/spring-boot
           spring-boot-convention/spring-boot-graceful-shutdown
@@ -35,9 +40,9 @@ spec:
           spring-boot-convention/app-live-view-appflavour-check
           spring-boot-convention/app-live-view-connector-boot
           spring-boot-convention/app-live-view-appflavours-boot
+        developer.apps.tanzu.vmware.com/image-source-digest: colellar.azurecr.io/tap-lsp/tap-lsp:default-java-spring-boot@sha256:b46774d5a08b5603d93447853c7da564a6d484abe1c5f8e476fb3c6daa5b2a40
         developer.conventions/target-containers: workload
-        kubectl.kubernetes.io/last-applied-configuration: |
-          {"apiVersion":"carto.run/v1alpha1","kind":"Workload","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"java-spring-boot","apps.tanzu.vmware.com/has-tests":"true","apps.tanzu.vmware.com/workload-type":"web"},"name":"java-spring-boot","namespace":"default"},"spec":{"build":{"env":[{"name":"BP_JVM_VERSION","value":"17"}]},"env":[{"name":"SPRING_CONFIG_IMPORT","value":"optional:configtree:${SERVICE_BINDING_ROOT}/config/"}],"params":[{"name":"annotations","value":{"autoscaling.knative.dev/maxScale":"3","autoscaling.knative.dev/metric":"rps","autoscaling.knative.dev/minScale":"0","autoscaling.knative.dev/target":"5","autoscaling.knative.dev/window":"120s","sidecar.opentelemetry.io/inject":"true"}},{"name":"testing_pipeline_matching_labels","value":{"apps.tanzu.vmware.com/language":"java","apps.tanzu.vmware.com/pipeline":"test"}}],"resources":{"limits":{"memory":"1Gi"},"requests":{"cpu":1,"memory":"1Gi"}},"serviceClaims":[{"name":"config","ref":{"apiVersion":"services.apps.tanzu.vmware.com/v1alpha1","kind":"ResourceClaim","name":"java-spring-boot-config"}}],"source":{"git":{"ref":{"branch":"main"},"url":"https://github.com/robertocolella/awesome-25"}}}}
+        local-source-proxy.apps.tanzu.vmware.com: colellar.azurecr.io/tap-lsp/tap-lsp:default-java-spring-boot@sha256:b46774d5a08b5603d93447853c7da564a6d484abe1c5f8e476fb3c6daa5b2a40
         sidecar.opentelemetry.io/inject: "true"
       labels:
         app.kubernetes.io/component: run
@@ -57,9 +62,13 @@ spec:
       - env:
         - name: SPRING_CONFIG_IMPORT
           value: optional:configtree:${SERVICE_BINDING_ROOT}/config/
+        - name: BPL_DEBUG_ENABLED
+          value: "true"
+        - name: BPL_DEBUG_PORT
+          value: "9005"
         - name: JAVA_TOOL_OPTIONS
           value: -Dmanagement.endpoint.health.probes.add-additional-paths="true" -Dmanagement.endpoint.health.show-details="always" -Dmanagement.endpoints.web.base-path="/actuator" -Dmanagement.endpoints.web.exposure.include="*" -Dmanagement.health.probes.enabled="true" -Dmanagement.server.port="8081" -Dserver.port="8080" -Dserver.shutdown.grace-period="24s"
-        image: colellar.azurecr.io/tap/supplychain/java-spring-boot-default@sha256:5079a30533940eff6a67695cf4102a8c2a540344b9c1a3e3f8475aa1baf2d4a5
+        image: colellar.azurecr.io/tap/supplychain/java-spring-boot-default@sha256:d0a502da810d025614eb82778fc31618304947bf5e64228d203693abb484d3dc
         livenessProbe:
           httpGet:
             path: /livez
